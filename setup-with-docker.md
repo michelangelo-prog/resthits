@@ -5,3 +5,11 @@ Update the environment variables, and then build the images and spin up the cont
 ```sh
 docker-compose up -d --build
 ```
+
+## Commands description
+
+### Run tests
+
+```sh
+docker-compose run resthits python manage.py test-pytest-with-plugins
+```
