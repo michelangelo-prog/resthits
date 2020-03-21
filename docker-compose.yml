@@ -1,0 +1,27 @@
+version: '3.5'
+
+services:
+
+  db:
+    container_name: db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    env_file:
+      - ./.env.db
+
+  resthits:
+    container_name: resthits
+    build:
+      context: ./resthits
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    hostname: resthits
+    command: su -m app_user -c "python manage.py run -h 0.0.0.0"
+    env_file:
+      - ./.env.resthits
+    depends_on:
+      - db
