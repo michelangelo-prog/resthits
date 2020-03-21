@@ -21,7 +21,7 @@ services:
       - 5000:5000
     hostname: resthits
     command: su -m app_user -c "python manage.py run -h 0.0.0.0"
+    volumes:
+      - ./resthits:/usr/src/app
     env_file:
       - ./.env.resthits
-    depends_on:
-      - db
