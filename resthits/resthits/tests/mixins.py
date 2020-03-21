@@ -1,6 +1,7 @@
 from flask_testing import TestCase
 
 from resthits.app.rest import APP_SETTINGS, create_app, db
+from resthits.domain.models.artists import Artist
 
 
 class BaseTestCase(TestCase):
@@ -16,3 +17,14 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+
+
+class DbMixin:
+    def _add_object_to_db(self, object):
+        db.session.add(object)
+        db.session.commit()
+
+
+class ArtistMixin:
+    def _get_all_artists_from_db(self):
+        return Artist.query.all()
