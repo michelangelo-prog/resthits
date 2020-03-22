@@ -32,3 +32,7 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
     @classmethod
     def get_twenty_recent_hits(cls):
         return cls.query.order_by(cls.created_at.desc()).limit(20).all()
+
+    @classmethod
+    def get_hit_by_title_url(cls, title_url):
+        return cls.query.filter_by(title_url=title_url).one_or_none()
