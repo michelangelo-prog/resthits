@@ -15,12 +15,12 @@ class Artist(IdMixin, CreateAtMixin, db.Model):
 
     @validates("first_name")
     def validate_first_name(self, key, value):
-        if not key or not value:
+        if not value:
             raise ValidationError("Field 'first_name' not provided.")
         return value
 
     @validates("last_name")
     def validate_last_name(self, key, value):
-        if not key or not value:
+        if not value:
             raise ValidationError("Field 'last_name' not provided.")
         return value
