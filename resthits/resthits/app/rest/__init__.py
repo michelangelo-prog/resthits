@@ -31,6 +31,9 @@ def create_app():
     migrate.init_app(app, db, directory=MIGRATION_DIR)
 
     # register blueprints
+    from resthits.domain.api.hits import hit_blueprint
+
+    app.register_blueprint(hit_blueprint, url_prefix="/api/v1")
 
     # error handlers
     @app.errorhandler(400)

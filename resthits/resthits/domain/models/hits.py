@@ -18,13 +18,17 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
 
     artist = relationship(Artist, backref=backref("hits", uselist=True))
 
-    def __init__(self, *args, **kwargs):
-        if not "title_url" in kwargs:
-            kwargs["title_url"] = slugify(kwargs.get("title"))
-        super().__init__(*args, **kwargs)
-
     @validates("title")
     def validate_title(self, key, value):
         if not value:
             raise ValidationError("Field 'title' not provided.")
         return value
+
+    def __init__(self, *args, **kwargs):
+        if not "title_url" in kwargs:
+            kwargs["title_url"] = slugify(kwargs.get("title"))
+        super().__init__(*args, **kwargs)
+
+    @classmethod
+    def get_twenty_recent_hits(cls):
+        return cls.query.order_by(cls.created_at.desc()).limit(20).all()

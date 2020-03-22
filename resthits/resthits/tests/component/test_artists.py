@@ -1,9 +1,9 @@
 from resthits.domain.models.artists import Artist
-from resthits.tests.component.mixins import ArtistMixin, BaseTestCase, DbMixin
+from resthits.tests.component.mixins import ArtistMixin, BaseTestCase
 from resthits.tests.factories import ArtistDictFactory
 
 
-class TestArtist(DbMixin, ArtistMixin, BaseTestCase):
+class TestArtist(ArtistMixin, BaseTestCase):
     def test_creation_artist_object_in_db(self):
         artist_data = ArtistDictFactory(first_name="Test", last_name="TestTest")
         artist = Artist(**artist_data)

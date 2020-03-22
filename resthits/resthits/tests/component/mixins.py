@@ -2,6 +2,8 @@ from flask_testing import TestCase
 
 from resthits.app.rest import APP_SETTINGS, create_app, db
 from resthits.domain.models.artists import Artist
+from resthits.domain.models.hits import Hit
+from resthits.tests.factories import ArtistDictFactory, HitDictFactory
 
 
 class BaseTestCase(TestCase):
@@ -25,6 +27,34 @@ class DbMixin:
         db.session.commit()
 
 
-class ArtistMixin:
+class ArtistMixin(DbMixin):
+    def get_twenty_best_hits(self, **kwargs):
+        uri = "/api/v1/hits"
+        return self.client.get(uri, **kwargs)
+
+    def get_hit_details(self, title_url, **kwargs):
+        uri = "/api/v1/hits/{}".format(title_url)
+        return self.client.get(uri, **kwargs)
+
     def _get_all_artists_from_db(self):
         return Artist.query.all()
+
+    def _create_artist_without_hits_in_db(self):
+        artist_data = ArtistDictFactory()
+        artist = Artist(**artist_data)
+        self._add_object_to_db(artist)
+        self.assertEqual(0, len(artist.hits))
+        return artist
+
+    def _create_artist_hits(self, artist, number_of_hits):
+        list = []
+        for i in range(number_of_hits):
+            hit = self._add_hit_to_artist(artist)
+            list.append(hit)
+        return list
+
+    def _add_hit_to_artist(self, artist):
+        data = HitDictFactory(artist_id=artist.id)
+        hit = Hit(**data)
+        self._add_object_to_db(hit)
+        return hit
