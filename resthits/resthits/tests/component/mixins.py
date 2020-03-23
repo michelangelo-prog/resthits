@@ -40,6 +40,10 @@ class ArtistMixin(DbMixin):
         uri = "/api/v1/hits"
         return self.client.post(uri, **kwargs)
 
+    def put_update_hit(self, title_url, **kwargs):
+        uri = "/api/v1/hits/{}".format(title_url)
+        return self.client.put(uri, **kwargs)
+
     def _get_all_artists_from_db(self):
         return Artist.query.all()
 
