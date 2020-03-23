@@ -36,3 +36,10 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
     @classmethod
     def get_hit_by_title_url(cls, title_url):
         return cls.query.filter_by(title_url=title_url).one_or_none()
+
+    @classmethod
+    def add_hit_from_json_data(cls, json):
+        hit = cls(artist_id=json.get("artistId"), title=json.get("title"))
+        db.session.add(hit)
+        db.session.commit()
+        return hit

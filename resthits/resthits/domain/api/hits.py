@@ -1,8 +1,15 @@
 from flask import Blueprint, abort, jsonify
+from marshmallow import Schema, fields, validate
 
+from resthits.domain.decorators import request_schema
 from resthits.domain.models.hits import Hit
 
 hit_blueprint = Blueprint("hit", __name__)
+
+
+class CreateHitRequestSchema(Schema):
+    artistId = fields.Integer(required=True)
+    title = fields.Str(required=True, validate=validate.Length(min=1, max=200))
 
 
 def hit_to_dict(hit):
@@ -41,3 +48,10 @@ def get_hit_details(title_url):
     if hit:
         return jsonify(hit_to_dict(hit)), 200
     abort(404)
+
+
+@hit_blueprint.route("/hits", methods=["POST"])
+@request_schema(CreateHitRequestSchema)
+def add_hit(json_data):
+    Hit.add_hit_from_json_data(json_data)
+    return {}, 201

@@ -55,3 +55,13 @@ class TestHitBlueprint(ArtistMixin, BaseTestCase):
         self._given_hits(number=2)
         response = self.get_hit_details(title_url="test-test-test")
         self.assertEqual(404, response.status_code)
+
+    def test_add_hit_using_post_method(self):
+        artist = self._create_artist_without_hits_in_db()
+        json = {"artistId": artist.id, "title": "test title"}
+
+        response = self.post_create_hit(json=json)
+
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(1, len(artist.hits))
+        self.assertEqual(json["title"], artist.hits[0].title)
