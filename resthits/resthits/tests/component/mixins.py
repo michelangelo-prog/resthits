@@ -36,7 +36,7 @@ class ArtistMixin(DbMixin):
         uri = "/api/v1/hits/{}".format(title_url)
         return self.client.get(uri, **kwargs)
 
-    def post_create_hit(self, **kwargs):
+    def create_hit(self, **kwargs):
         uri = "/api/v1/hits"
         return self.client.post(uri, **kwargs)
 

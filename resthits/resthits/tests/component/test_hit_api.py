@@ -61,7 +61,7 @@ class TestHitBlueprint(ArtistMixin, BaseTestCase):
         artist = self._create_artist_without_hits_in_db()
         json = {"artistId": artist.id, "title": "test title"}
 
-        response = self.post_create_hit(json=json)
+        response = self.create_hit(json=json)
 
         self.assertEqual(201, response.status_code)
         self.assertEqual(1, len(artist.hits))
@@ -70,7 +70,7 @@ class TestHitBlueprint(ArtistMixin, BaseTestCase):
     def test_return_400_when_create_hit_without_artistId(self):
         json = {"title": "test title"}
 
-        response = self.post_create_hit(json=json)
+        response = self.create_hit(json=json)
 
         self.assertEqual(400, response.status_code)
 
@@ -78,7 +78,7 @@ class TestHitBlueprint(ArtistMixin, BaseTestCase):
         artist = self._create_artist_without_hits_in_db()
         json = {"artistId": artist.id}
 
-        response = self.post_create_hit(json=json)
+        response = self.create_hit(json=json)
 
         self.assertEqual(400, response.status_code)
 
@@ -86,7 +86,7 @@ class TestHitBlueprint(ArtistMixin, BaseTestCase):
         artist = self._create_artist_without_hits_in_db()
         json = {"artistId": artist.id, "title": None}
 
-        response = self.post_create_hit(json=json)
+        response = self.create_hit(json=json)
 
         self.assertEqual(400, response.status_code)
 
