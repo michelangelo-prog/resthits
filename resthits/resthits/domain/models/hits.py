@@ -9,7 +9,6 @@ from .behaviors import CreateAtMixin, IdMixin, UpdateAtMixin
 
 
 class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
-
     __tablename__ = "hits"
 
     artist_id = db.Column(db.Integer, db.ForeignKey("artists.id"), nullable=False)
@@ -40,6 +39,38 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
     @classmethod
     def add_hit_from_json_data(cls, json):
         hit = cls(artist_id=json.get("artistId"), title=json.get("title"))
-        db.session.add(hit)
-        db.session.commit()
+        cls._add_object_to_db(hit)
         return hit
+
+    @classmethod
+    def update_hit_by_title_url_from_json_data(cls, title_url, json_data):
+        hit = cls.get_hit_by_title_url(title_url)
+        if hit:
+            hit.artist_id = json_data["artistId"]
+            hit.title = json_data["title"]
+            hit.title_url = json_data["titleUrl"]
+            cls._commit_db()
+            return hit
+        return None
+
+    @classmethod
+    def delete_hit_by_title_url(cls, title_url):
+        hit = cls.get_hit_by_title_url(title_url)
+        if hit:
+            cls._delete_object_from_db(hit)
+            return True
+        return
+
+    @classmethod
+    def _commit_db(cls):
+        db.session.commit()
+
+    @classmethod
+    def _add_object_to_db(cls, obj):
+        db.session.add(obj)
+        cls._commit_db()
+
+    @classmethod
+    def _delete_object_from_db(cls, obj):
+        db.session.delete(obj)
+        cls._commit_db()
