@@ -1,5 +1,6 @@
 import subprocess
 
+import click
 from flask.cli import FlaskGroup
 
 from resthits.app.rest import create_app, db
@@ -35,10 +36,11 @@ def test_pytest():
 
 
 @cli.command()
-def create_sample_data():
+@click.argument("hits_number", type=int)
+def create_sample_data(hits_number):
     """Create sample data in db"""
     factory = SampleDataFactory(database=db)
-    factory.add_sample_hits_to_db(number_of_artists=40)
+    factory.add_sample_hits_to_db(hits_number)
     print("Sample data created.")
 
 
