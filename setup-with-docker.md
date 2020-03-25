@@ -13,3 +13,9 @@ docker-compose up -d --build
 ```sh
 docker-compose run resthits python manage.py test-pytest-with-plugins
 ```
+
+### Create sample data
+
+```sh
+docker-compose run resthits python manage.py create-sample-data
+```

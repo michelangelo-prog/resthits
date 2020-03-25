@@ -1,5 +1,8 @@
-from factory import DictFactory, Sequence
+from factory import DictFactory, Factory, Sequence, SubFactory
 from factory.fuzzy import FuzzyInteger
+
+from resthits.domain.models.artists import Artist
+from resthits.domain.models.hits import Hit
 
 
 class ArtistDictFactory(DictFactory):
@@ -12,3 +15,20 @@ class HitDictFactory(DictFactory):
     title = Sequence(lambda n: f"Hit title {n}")
     title_url = Sequence(lambda n: f"hit-title-{n}")
     artist_id = FuzzyInteger(0, 5)
+
+
+class ArtistFactory(Factory):
+    class Meta:
+        model = Artist
+
+    first_name = Sequence(lambda n: f"first_name_{n}")
+    last_name = Sequence(lambda n: f"last_name_{n}")
+
+
+class HitFactory(Factory):
+    class Meta:
+        model = Hit
+
+    title = Sequence(lambda n: f"Hit title {n}")
+    title_url = Sequence(lambda n: f"hit-title-{n}")
+    artist = SubFactory(ArtistFactory)

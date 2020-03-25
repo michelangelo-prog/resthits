@@ -15,6 +15,7 @@ class BaseTestCase(TestCase):
     def setUp(self):
         db.drop_all()
         db.create_all()
+        self.db = db
 
     def tearDown(self):
         db.session.remove()
@@ -70,3 +71,8 @@ class ArtistMixin(DbMixin):
         hit = Hit(**data)
         self._add_object_to_db(hit)
         return hit
+
+
+class HitMixin:
+    def get_all_hits_from_db(self):
+        return Hit.query.all()

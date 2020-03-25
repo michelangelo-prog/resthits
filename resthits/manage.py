@@ -3,6 +3,7 @@ import subprocess
 from flask.cli import FlaskGroup
 
 from resthits.app.rest import create_app, db
+from resthits.domain.utils import SampleDataFactory
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -31,6 +32,14 @@ def test_pytest_with_plugins():
 def test_pytest():
     """Runs pytest on the gatekeeper."""
     subprocess.run(["pytest"])
+
+
+@cli.command()
+def create_sample_data():
+    """Create sample data in db"""
+    factory = SampleDataFactory(database=db)
+    factory.add_sample_hits_to_db(number_of_artists=40)
+    print("Sample data created.")
 
 
 if __name__ == "__main__":
