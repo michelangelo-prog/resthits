@@ -95,17 +95,13 @@ class TestHitBlueprint(HitMixin, DbMixin, BaseTestCase):
 
         response = self.__when_add_hit(data)
         self.__then_response_is_201(response)
-        self.__then_hit_is_added_to_artist_and_proper_response_has_returned(
-            artist, data
-        )
+        self.__then_hit_is_added_to_artist(artist, data)
 
     def __when_add_hit(self, json):
         response = self.create_hit(json=json)
         return response
 
-    def __then_hit_is_added_to_artist_and_proper_response_has_returned(
-        self, artist, data_sent
-    ):
+    def __then_hit_is_added_to_artist(self, artist, data_sent):
         self.assertEqual(len(self.hits) + 1, len(self._get_all_hits_from_db()))
         self.assertEqual(2, len(artist.hits))
         self.assertEqual(data_sent["title"], artist.hits[1].title)
