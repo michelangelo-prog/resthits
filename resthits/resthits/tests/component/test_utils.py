@@ -1,13 +1,17 @@
 from resthits.domain.utils import SampleDataFactory
-from resthits.tests.component.mixins import BaseTestCase, HitMixin
+from resthits.tests.component.mixins import BaseTestCase, DbMixin
 
 
-class TestSampleDataFactory(HitMixin, BaseTestCase):
+class TestSampleDataFactory(DbMixin, BaseTestCase):
     def test_create_sample_data(self):
-        number_of_hits = 10
+        self.__number_of_hits_in_db_is_equal(0)
+
+        expected_hits_generated = 10
         factory = SampleDataFactory(database=self.db)
-        factory.add_sample_hits_to_db(number_of_hits)
+        factory.add_sample_hits_to_db(expected_hits_generated)
 
-        hits = self.get_all_hits_from_db()
+        self.__number_of_hits_in_db_is_equal(expected_hits_generated)
 
-        self.assertEqual(number_of_hits, len(hits))
+    def __number_of_hits_in_db_is_equal(self, number):
+        hits = self._get_all_hits_from_db()
+        self.assertEqual(number, len(hits))
