@@ -24,3 +24,7 @@ class Artist(IdMixin, CreateAtMixin, db.Model):
         if not value:
             raise ValidationError("Field 'last_name' not provided.")
         return value
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()

@@ -38,7 +38,7 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
 
     @classmethod
     def add_hit_from_json_data(cls, data):
-        if cls.check_if_hit_with_artist_id_exists(data["artistId"]):
+        if Artist.get_by_id(data["artistId"]):
             title_url = cls.get_available_title_url_by_title(data["title"])
             hit = cls(
                 artist_id=data["artistId"], title=data["title"], title_url=title_url
@@ -48,10 +48,6 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
         return None
 
     @classmethod
-    def check_if_hit_with_artist_id_exists(cls, id):
-        return cls.query.filter_by(artist_id=id).first()
-
-    @classmethod
     def get_available_title_url_by_title(cls, title):
         title_url = slugify(title)
         title_url = cls._set_up_title_url(title_url)
@@ -59,14 +55,10 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
 
     @classmethod
     def _set_up_title_url(cls, title_url):
-        if cls.check_if_hit_with_title_url_exists(title_url):
+        if cls.get_hit_by_title_url(title_url):
             title_url = cls._format_title_url(title_url)
             return cls._set_up_title_url(title_url)
         return title_url
-
-    @classmethod
-    def check_if_hit_with_title_url_exists(cls, title_url):
-        return cls.query.filter_by(title_url=title_url).first()
 
     @classmethod
     def _format_title_url(cls, title_url):
@@ -74,7 +66,7 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
         try:
             value = int(phrases[-1])
         except ValueError:
-            return "{}-1".format(title_url)
+            return "{}-2".format(title_url)
         else:
             phrases[-1] = str(value + 1)
             return "-".join(phrases)
