@@ -1,6 +1,6 @@
 # resthits
 
-Application that provides simple REST API for radio hits.
+Application that provides simple REST API for radio hits using Python, Flask, PostgreSQL and Docker.
 
 ## resthits description
 
