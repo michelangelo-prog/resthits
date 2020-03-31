@@ -6,9 +6,17 @@ Update the environment variables, and then build the images and spin up the cont
 docker-compose up -d --build
 ```
 
+Access the application at the address [http://localhost:5000/](http://localhost:5000/)
+
 ## Commands description
 
 ### Run tests
+
+```sh
+docker-compose run resthits python manage.py test-pytest
+```
+
+### Run tests with black, isort and flakes
 
 ```sh
 docker-compose run resthits python manage.py test-pytest-with-plugins
