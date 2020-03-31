@@ -74,13 +74,31 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
     @classmethod
     def update_hit_by_title_url_from_json_data(cls, title_url, json_data):
         hit = cls.get_hit_by_title_url(title_url)
-        if hit:
-            hit.artist_id = json_data["artistId"]
+        artist = Artist.get_by_id(json_data["artistId"])
+        if (
+            artist
+            and hit
+            and not cls._title_url_is_available_in_another_artists_songs(
+                artist.id, json_data["titleUrl"]
+            )
+        ):
+            hit.artist = artist
             hit.title = json_data["title"]
-            hit.title_url = json_data["titleUrl"]
+            if hit.title_url != json_data["titleUrl"]:
+                hit.title_url = cls._set_up_title_url(json_data["titleUrl"])
             cls._commit_db()
             return hit
         return None
+
+    @classmethod
+    def _title_url_is_available_in_another_artists_songs(cls, artist_id, title_url):
+        return (
+            True
+            if cls.query.filter(
+                (cls.artist_id != artist_id) & (cls.title_url == title_url)
+            ).first()
+            else False
+        )
 
     @classmethod
     def delete_hit_by_title_url(cls, title_url):
@@ -88,7 +106,7 @@ class Hit(IdMixin, CreateAtMixin, UpdateAtMixin, db.Model):
         if hit:
             cls._delete_object_from_db(hit)
             return True
-        return
+        return False
 
     @classmethod
     def _commit_db(cls):

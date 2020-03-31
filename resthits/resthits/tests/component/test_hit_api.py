@@ -170,6 +170,28 @@ class TestHitBlueprint(HitMixin, DbMixin, BaseTestCase):
 
         self.__then_response_is_400(response)
 
+    def test_return_400_when_try_update_hit_with_unknown_artist_id(self):
+        hit = self.hits[0]
+        data = {"artistId": 1e6, "title": "Test", "titleUrl": "test-test"}
+
+        response = self.update_hit(title_url=hit.title_url, json=data)
+
+        self.__then_response_is_400(response)
+
+    def test_return_400_when_try_update_hit_with__title_url__which_is_already_used(
+        self
+    ):
+        hit = self.hits[0]
+        data = {
+            "artistId": hit.artist_id,
+            "title": "Test",
+            "titleUrl": self.hits[1].title_url,
+        }
+
+        response = self.update_hit(title_url=hit.title_url, json=data)
+
+        self.__then_response_is_400(response)
+
     def test_delete_hit(self):
         hit = self.hits[0]
         artist = hit.artist
